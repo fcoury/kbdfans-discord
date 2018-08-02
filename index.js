@@ -43,9 +43,12 @@ async function run() {
   let client;
 
   try {
+    console.log('Connecting');
     client = await connect();
+    console.log('Fetching products');
     const feed = await axios('https://kbdfans.cn/products.json');
 
+    console.log('Checking for new products');
     await checkTable(client);
     const last = await lastNotified(client);
     if (!last) {
