@@ -40,12 +40,13 @@ async function sendNotifications(notifications) {
 }
 
 async function run() {
-  const client = await connect();
-  const feed = await axios('https://kbdfans.cn/products.json');
-
-  await checkTable(client);
+  let client;
 
   try {
+    client = await connect();
+    const feed = await axios('https://kbdfans.cn/products.json');
+
+    await checkTable(client);
     const last = await lastNotified(client);
     if (!last) {
       const id = feed.data.products[0].id;
@@ -64,7 +65,9 @@ async function run() {
     console.log('error', e);
   }
   finally {
-    client.end();
+    if (client) {
+      client.end();
+    }
     setTimeout(() => run(), process.env.INTERVAL || 5 * 60000);
   }
 };
