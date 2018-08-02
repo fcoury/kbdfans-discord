@@ -65,7 +65,7 @@ async function run() {
   }
   finally {
     client.end();
-    setTimeout(() => run(), process.env.INTERVAL || 1000);
+    setTimeout(() => run(), process.env.INTERVAL || 5 * 60000);
   }
 };
 
