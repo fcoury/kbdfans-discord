@@ -62,7 +62,7 @@ async function run() {
         console.log('sending notifications');
         await sendNotifications(notifications);
         console.log('updating last');
-        await setLast(client, id);
+        await updateLast(client, id);
       } else {
         console.log('Nothing new');
       }
