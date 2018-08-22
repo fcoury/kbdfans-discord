@@ -33,7 +33,7 @@ async function checkTable(client) {
 async function sendNotifications(notifications) {
   const webhook = process.env.WEBHOOK_URL;
   return Promise.all(notifications.map(n => {
-    const content = `${n.title} - https://kbdfans.cn/products/${n.handle}`;
+    const content = `${n.title} - https://kbd.fans/products/${n.handle}`;
     console.log('content', content);
     axios.post(webhook, { content });
   }));
@@ -46,7 +46,7 @@ async function run() {
     console.log('Connecting');
     client = await connect();
     console.log('Fetching products');
-    const feed = await axios('https://kbdfans.cn/products.json');
+    const feed = await axios('https://kbd.fans/products.json');
 
     console.log('Checking for new products');
     await checkTable(client);
