@@ -51,14 +51,14 @@ async function run() {
     console.log('Checking for new products');
     await checkTable(client);
     const last = await lastNotified(client);
-    const id = feed.data.products[0].id;
     if (!last) {
-      console.log('id', id);
+      const id = feed.data.products[0].id;
       sendNotifications([feed.data.products[0]]);
       await setLast(client, id);
     } else {
       const notifications = feed.data.products.filter(f => f.id > last);
       if (notifications.length > 0) {
+        const id = notifications[0].id;
         console.log('sending notifications');
         await sendNotifications(notifications);
         console.log('updating last');
