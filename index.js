@@ -33,7 +33,7 @@ async function checkTable(client) {
 async function sendNotifications(notifications) {
   const webhook = process.env.WEBHOOK_URL;
   return Promise.all(notifications.map(n => {
-    const content = `${n.title} - https://kbdfans.myshopify.com/products/${n.handle}`;
+    const content = `<@&676500305730469898> ${n.title} - https://kbdfans.myshopify.com/products/${n.handle}`;
     console.log('content', content);
     axios.post(webhook, { content });
   }));
