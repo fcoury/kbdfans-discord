@@ -5,7 +5,7 @@
   "author": "Felipe Coury <felipe.coury@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "dotenv": "^5.0.1",
     "feedparser": "2.2.9",
     "pg": "^7.4.1",
