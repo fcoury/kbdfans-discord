@@ -61,7 +61,7 @@ async function run() {
       sendNotifications([feed.data.products[0]]);
       await setLast(client, created_at);
     } else {
-      const notifications = feed.data.products.filter(f => f.id > last);
+      const notifications = feed.data.products.filter(f => f.created_at > last);
       console.log('notifications.length', notifications.length);
       if (notifications.length > 0) {
         const { created_at } = notifications[0];
