@@ -3,8 +3,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const { connect, exec } = require('./db');
-
-// 'https://kbdfans.myshopify.com/blogs/news.atom'
+const { getFeeds } = require('./utils');
 
 async function lastNotified(client) {
   return new Promise((resolve, reject) => {
@@ -49,29 +48,27 @@ async function run() {
     console.log('Connecting', process.env.NODE_ENV);
     client = await connect();
     console.log('Fetching products');
-    const feed = process.env.NODE_ENV === 'production'
-      ? await axios('https://kbdfans.myshopify.com/products.json')
-      : { data: JSON.parse(require('fs').readFileSync('./products.json', 'utf8')) };
+    const products = await getFeeds();
 
     console.log('Checking for new products');
     await checkTable(client);
     const last = await lastNotified(client);
-    if (!last) {
-      const { created_at } = feed.data.products[0];
-      sendNotifications([feed.data.products[0]]);
-      await setLast(client, created_at);
-    } else {
-      const notifications = feed.data.products.filter(f => f.created_at > last);
-      console.log('notifications.length', notifications.length);
-      if (notifications.length > 0) {
-        const { created_at } = notifications[0];
-        console.log('sending notifications');
-        await sendNotifications(notifications);
-        console.log('updating last');
-        await updateLast(client, created_at);
+    const notifications = last
+      ? products.filter(f => f.updated_at > last)
+      : products;
+    console.log('notifications.length', notifications.length);
+    if (notifications.length > 0) {
+      const { updated_at } = notifications[0];
+      console.log('sending notifications');
+      await sendNotifications(notifications);
+      console.log('updating last', updated_at);
+      if (last) {
+        await updateLast(client, updated_at);
       } else {
-        console.log('Nothing new');
+        await setLast(client, updated_at);
       }
+    } else {
+      console.log('Nothing new');
     }
   } catch (e) {
     console.log('error', e);

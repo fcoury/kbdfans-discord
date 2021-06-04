@@ -8,9 +8,24 @@
     "axios": "^0.18.0",
     "dotenv": "^5.0.1",
     "feedparser": "2.2.9",
+    "lodash": "^4.17.21",
     "pg": "^8.4.2",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
     "rss-parser": "^3.1.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint-plugin-mocha-no-only": "^1.1.1",
+    "mocha": "^8.2.0",
+    "nock": "^13.0.4",
+    "nodemon": "^2.0.6",
+    "sqlite3": "^5.0.0",
+    "timekeeper": "^2.2.0"
+  },
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon .",
+    "test:watch": "NODE_ENV=test DB_ENV=test mocha -w --exclude './node_modules/**' '*.spec.js'"
   }
 }
