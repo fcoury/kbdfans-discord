@@ -1,3 +1,4 @@
+const Promise = require("bluebird");
 const moment = require('moment');
 const axios = require('axios');
 
@@ -30,16 +31,45 @@ async function checkTable(client) {
   return exec(client, query);
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function sendNotifications(notifications) {
   const webhook = process.env.WEBHOOK_URL;
-  return Promise.all(notifications.map(n => {
+  return Promise.mapSeries(notifications, async n => {
     const content = `<@&676500305730469898> ${n.title} - https://kbdfans.myshopify.com/products/${n.handle}`;
     console.log('content', content);
     if (!webhook) {
       return Promise.resolve();
     }
-    return axios.post(webhook, { content });
-  }));
+
+    let res;
+    let retries = 5;
+    while (true) {
+      try {
+        res = await axios.post(webhook, { content });
+        break;
+      } catch (err) {
+        console.error(`RETRYING[${retries}] - Error fetching`, webhook);
+        const { response } = err;
+
+        if (response.status === 429) {
+          if (retries > 0) {
+            retries--;
+            console.log(' --- before sleep', response.data.retry_after + 100);
+            await sleep(response.data.retry_after + 100);
+            console.log(' --- after sleep');
+            continue;
+          }
+        }
+
+        throw err;
+      }
+    }
+
+    return res;
+  });
 }
 
 async function run() {
