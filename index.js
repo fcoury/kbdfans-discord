@@ -1,3 +1,4 @@
+const moment = require('moment');
 const axios = require('axios');
 
 require('dotenv').config();
@@ -49,12 +50,15 @@ async function run() {
     client = await connect();
     console.log('Fetching products');
     const products = await getFeeds();
+    console.log('Got', products.length, 'products...');
 
-    console.log('Checking for new products');
     await checkTable(client);
+    console.log('Checking for new products');
     const last = await lastNotified(client);
+    console.log('Last date', last);
+    console.log(products.map(f => moment(f.updated_at)));
     const notifications = last
-      ? products.filter(f => f.updated_at > last)
+      ? products.filter(f => moment(f.updated_at).isAfter(last))
       : products;
     console.log('notifications.length', notifications.length);
     if (notifications.length > 0) {
