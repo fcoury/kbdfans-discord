@@ -22,7 +22,7 @@
     "mocha": "^8.2.0",
     "nock": "^13.0.4",
     "nodemon": "^2.0.6",
-    "sqlite3": "^5.0.0",
+    "sqlite3": "^5.0.3",
     "timekeeper": "^2.2.0"
   },
   "scripts": {
